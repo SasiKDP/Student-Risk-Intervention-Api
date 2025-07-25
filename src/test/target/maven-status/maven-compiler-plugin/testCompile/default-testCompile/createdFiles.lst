@@ -1,0 +1,8 @@
+com\education\student\controller\StudentControllerTest.class
+com\education\student\service\StudentServiceTest.class
+com\education\student\service\RiskAssessmentServiceTest.class
+com\education\student\service\UserServiceTest.class
+com\education\student\StudentApplicationTests.class
+com\education\student\controller\RiskAssessmentControllerTest.class
+com\education\student\controller\UserControllerTest.class
+com\education\student\controller\LoginControllerTest.class
