@@ -8,6 +8,7 @@ import com.education.student.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +30,13 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponseDto>> createUser(@RequestBody UserDto dto) {
-        try {
-            UserResponseDto createdUser = userService.createUser(dto);
-            return ResponseEntity.ok(ApiResponse.success("User registered successfully", createdUser));
-        } catch (RuntimeException e) {
-            log.error("User registration failed: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(ApiResponse.error("Registration failed", "REGISTRATION_FAILED", e.getMessage()));
-        }
+        log.info("Received user registration request for username: {}", dto.getUsername());
+        UserResponseDto createdUser = userService.createUser(dto);
+        return ResponseEntity.ok(ApiResponse.success("User registered successfully", createdUser));
     }
 
     @GetMapping("/getAllUsers")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
         try {
             List<User> users = userService.getAllUsersList();

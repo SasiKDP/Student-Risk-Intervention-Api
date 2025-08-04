@@ -21,14 +21,11 @@ public class AcademicPerformanceService {
 
     private static final Logger logger = LoggerFactory.getLogger(AcademicPerformanceService.class);
 
-    private final AcademicPerformanceRepo academicPerformanceRepo;
-    private final StudentRepository studentRepo;
     @Autowired
-    public AcademicPerformanceService(AcademicPerformanceRepo academicPerformanceRepo,
-                                      StudentRepository studentRepo) {
-        this.academicPerformanceRepo = academicPerformanceRepo;
-        this.studentRepo = studentRepo;
-    }
+    AcademicPerformanceRepo academicPerformanceRepo;
+    @Autowired
+    StudentRepository studentRepo;
+
 
     public ResponseEntity<ApiResponse<Object>> addAcademicPerformance(AcademicPerformanceDTO dto) {
         logger.info("Adding academic performance for student ID: {}", dto.getStudentId());

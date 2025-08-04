@@ -2,6 +2,8 @@ package com.education.student.service;
 
 import com.education.student.dto.UserDto;
 import com.education.student.dto.UserResponseDto;
+import com.education.student.exceptions.ResourceNotFoundException;
+import com.education.student.model.Role;
 import com.education.student.model.User;
 import com.education.student.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,7 +28,7 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .filter(user -> user.getPassword().equals(password))
                 .orElseThrow(() -> {
-                    log.warn("Authentication failed for username: {}", username);
+                    log.error("Authentication failed for username: {}", username);
                     return new RuntimeException("Invalid username or password");
                 });
     }
@@ -34,17 +36,24 @@ public class UserService {
     public UserResponseDto createUser(UserDto dto) {
         log.info("Registering new user with username: {}", dto.getUsername());
 
+        // Just check null, no need to check empty string because it's enum
+        if (dto.getRole() == null) {
+            log.error("Role is missing for user: {}", dto.getUsername());
+            throw new ResourceNotFoundException("Role is required");
+        }
+
         User user = new User();
         user.setId(generateUserId());
         user.setUsername(dto.getUsername());
         user.setPassword(dto.getPassword());
-        user.setRole(dto.getRole());
+        user.setRole(dto.getRole());  // Directly assign enum from dto
 
         userRepository.save(user);
         log.info("User created successfully with ID: {}", user.getId());
 
         return new UserResponseDto(user.getId(), user.getUsername(), user.getRole());
     }
+
 
     private String generateUserId() {
         int count = userRepository.findAll().size() + 1;

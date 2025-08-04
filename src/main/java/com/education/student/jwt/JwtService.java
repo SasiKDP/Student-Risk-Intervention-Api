@@ -1,5 +1,6 @@
 package com.education.student.jwt;
 
+import com.education.student.exceptions.CustomJwtException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -41,10 +42,21 @@ public class JwtService {
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        if (token == null || token.trim().isEmpty()) {
+            throw new CustomJwtException("Token is empty or missing", null);
+        }
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new CustomJwtException("Token is expired", e);
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new CustomJwtException("Token is invalid", e);
+        }
     }
+
+
 }

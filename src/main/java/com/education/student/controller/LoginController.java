@@ -57,8 +57,8 @@ public class LoginController {
 
         } catch (RuntimeException e) {
             log.warn("Login failed for user: {}. Reason: {}", request.getUsername(), e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error("Login failed", "LOGIN_FAILED", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.error("Login failed",  String.valueOf(HttpStatus.OK.value()), e.getMessage()));
         }
     }
 }
